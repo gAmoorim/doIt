@@ -1,0 +1,150 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  background: #1a1a24;
+  border: 1px solid #2a2a3a;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 28px 0;
+}
+
+.header h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #f1f1f1;
+}
+
+.btnFechar {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.btnFechar:hover { color: #e94560; }
+
+.body {
+  padding: 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.73rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: rgba(255,255,255,0.35);
+}
+
+.formGroup label span {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.2);
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  padding: 10px 14px;
+  background: #13131c;
+  border: 1.5px solid #2a2a3a;
+  border-radius: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #f1f1f1;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.formGroup input::placeholder,
+.formGroup textarea::placeholder { color: rgba(255,255,255,0.18); }
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus { border-color: #e94560; }
+
+.formGroup select option { background: #1a1a24; }
+
+.footer {
+  display: flex;
+  gap: 10px;
+  padding: 0 28px 24px;
+}
+
+.btnCancelar {
+  flex: 1;
+  padding: 11px;
+  background: transparent;
+  border: 1.5px solid #2a2a3a;
+  border-radius: 9px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.btnCancelar:hover { border-color: #e94560; color: #e94560; }
+
+.btnSalvar {
+  flex: 2;
+  padding: 11px;
+  background: #e94560;
+  border: none;
+  border-radius: 9px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btnSalvar:hover { opacity: 0.88; }

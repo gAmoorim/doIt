@@ -12,7 +12,7 @@ const filtros = async (req,res) => {
         }
 
         if (titulo) {
-            query.where("titulo", "ilike", `%${titulo}%`)
+            query.where("titulo", "like", `%${titulo}%`)
         }
 
         if (categoria) {
@@ -25,8 +25,8 @@ const filtros = async (req,res) => {
 
        if (search) {
             query.andWhere(function () {
-                this.where("titulo", "ilike", `%${search}%`)
-                    .orWhere("descricao", "ilike", `%${search}%`);
+                this.where("titulo", "like", `%${search}%`)
+                    .orWhere("descricao", "like", `%${search}%`);
             })
         }
 

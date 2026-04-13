@@ -1,13 +1,48 @@
-require('dotenv').config();
+const path = require('path')
+const fs = require('fs')
+
+const dataDir = path.join(__dirname, '../../data')
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 
 const knex = require('knex')({
-    client: 'pg',
+    client: 'sqlite3',
     connection: {
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PWD,
-        database: process.env.DB_NAME
+        filename: path.join(dataDir, 'todolist.db')
+    },
+    useNullAsDefault: true
+})
+
+const inicializarBanco = async () => {
+    const temUsuarios = await knex.schema.hasTable('usuarios')
+    if (!temUsuarios) {
+        await knex.schema.createTable('usuarios', (t) => {
+            t.increments('id').primary()
+            t.string('nome').notNullable()
+            t.string('email').unique().notNullable()
+            t.string('senha').notNullable()
+            t.timestamp('criado_em').defaultTo(knex.fn.now())
+        })
+        console.log('Tabela usuarios criada.')
     }
-});
+
+    const temTarefas = await knex.schema.hasTable('tarefas')
+    if (!temTarefas) {
+        await knex.schema.createTable('tarefas', (t) => {
+            t.increments('id').primary()
+            t.string('titulo').notNullable()
+            t.text('descricao')
+            t.string('status').defaultTo('pendente')
+            t.string('prioridade')
+            t.string('categoria')
+            t.datetime('data_vencimento')
+            t.text('etiquetas')
+            t.integer('user_id').references('id').inTable('usuarios').onDelete('CASCADE')
+            t.timestamp('criado_em').defaultTo(knex.fn.now())
+        })
+        console.log('Tabela tarefas criada.')
+    }
+}
+
+inicializarBanco().catch(console.error)
 
 module.exports = knex

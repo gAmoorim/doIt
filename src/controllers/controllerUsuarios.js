@@ -4,16 +4,12 @@ const { queryBuscarUsuarioPeloEmail, queryCadastrarUsuario, queryAtualizarUsuari
 const cadastrarUsuario = async (req, res) => {
     const {nome, email, senha} = req.body
 
-    if (!nome) {
-        return res.status(400).json({mensagem: 'O nome precisa ser informado'})
+    if (!nome || !email || !senha) {
+        return res.status(400).json({ error: 'Preencha todos os campos'})
     }
 
-    if (!email) {
-        return res.status(400).jspon({mensagem: 'O email precisa ser informado'})
-    }
-
-    if (!senha) {
-        return res.status(400).json({mensagem: 'A senha precisa ser informada'})
+    if (!validarEmail(email)) {
+        return res.status(400).json({ error: 'Formato do email inválido' })
     }
 
     try {
