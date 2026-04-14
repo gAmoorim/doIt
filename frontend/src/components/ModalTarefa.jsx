@@ -45,7 +45,7 @@ export default function ModalTarefa({ aberto, tarefa, onSalvar, onFechar }) {
           </div>
 
           <div className={styles.formGroup}>
-            <label>Descrição *</label>
+            <label>Descrição</label>
             <textarea name="descricao" value={form.descricao} onChange={atualizar} placeholder="Descreva a tarefa..." rows={3} />
           </div>
 

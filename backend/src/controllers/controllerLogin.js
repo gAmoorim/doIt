@@ -28,7 +28,7 @@ const login = async (req,res) => {
             email: usuario.email
         }
 
-        const token = jwt.sign(dadosTokenUsuario, process.env.JWT_PWD || 'doit_secret_key_2026', { expiresIn: '2h'})
+        const token = jwt.sign(dadosTokenUsuario, process.env.JWT_PWD || 'doit_secret_key_2026', { expiresIn: '5d'})
 
         const { senha: _, ...dadosUsuario } = usuario
 

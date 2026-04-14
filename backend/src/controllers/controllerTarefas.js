@@ -3,8 +3,8 @@ const { queryNovaTarefa, queryTarefas, queryTarefaEspecifica, queryBuscarTarefa,
 const criarTarefa = async (req,res) => {
     const { titulo, descricao, data_vencimento, prioridade, categoria, status, etiquetas} = req.body
 
-    if (!titulo || !descricao || !prioridade) {
-        return res.status(400).json({mensagem: 'Preencha pelo menos o titulo, a descrição e a prioridade'})
+    if (!titulo || !prioridade) {
+        return res.status(400).json({mensagem: 'Titulo, descrição e prioridade são obrigatórios'})
     }
 
     const {id} = req.usuario
@@ -31,10 +31,9 @@ const criarTarefa = async (req,res) => {
 }
 
 const listarTarefas = async (req,res) => {
+    const {id} = req.usuario
 
     try {
-        // LISTAR TAREFAS DO USUARIO LOGADO
-        const {id} = req.usuario
         const tarefas = await queryTarefas(id)
 
         if (!tarefas) {
