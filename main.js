@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron')
 const path = require('path')
 
 require('dotenv').config()
-require('./server.js')
+require('./backend/server.js')
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -10,6 +10,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1100,
     height: 720,
+    title: 'DoIt',
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
@@ -17,7 +18,6 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false
     },
-    titleBarStyle: 'hiddenInset',
     backgroundColor: '#0f0f13'
   })
 

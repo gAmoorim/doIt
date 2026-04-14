@@ -2,14 +2,9 @@ require('dotenv').config()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { queryBuscarUsuarioPeloEmail } = require('../database/querys/queryUsuarios')
-const { validarEmail } = require('../utils/validations')
 
 const login = async (req,res) => {
     const {email, senha} = req.body
-
-    if (!validarEmail(email)) {
-        return res.status(400).json({ error: 'Formato do email inválido' })
-    }
 
     if (!email || !senha) {
         return res.status(400).json({mensagem:'Informe email e senha'})
@@ -33,7 +28,7 @@ const login = async (req,res) => {
             email: usuario.email
         }
 
-        const token = jwt.sign(dadosTokenUsuario, process.env.JWT_PWD, { expiresIn: '2h'})
+        const token = jwt.sign(dadosTokenUsuario, process.env.JWT_PWD || 'doit_secret_key_2026', { expiresIn: '2h'})
 
         const { senha: _, ...dadosUsuario } = usuario
 

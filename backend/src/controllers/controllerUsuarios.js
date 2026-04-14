@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const { queryBuscarUsuarioPeloEmail, queryCadastrarUsuario, queryAtualizarUsuario, queryDeletarUsuario, queryExibirUsuarios } = require('../database/querys/queryUsuarios');
+const { validarEmail } = require('../utils/validations');
 
 const cadastrarUsuario = async (req, res) => {
     const {nome, email, senha} = req.body

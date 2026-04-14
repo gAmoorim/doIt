@@ -13,7 +13,7 @@ const auth = async (req, res, next) => {
     try {
         const token = authorization.replace('Bearer', '').split(' ')[1]
 
-        const { id } = jwt.verify(token, process.env.JWT_PWD)
+        const { id } = jwt.verify(token, process.env.JWT_PWD || 'doit_secret_key_2026')
 
         const usuarioExiste = await queryUsuarioExistente(id)
 

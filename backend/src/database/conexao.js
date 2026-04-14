@@ -1,7 +1,15 @@
 const path = require('path')
 const fs = require('fs')
 
-const dataDir = path.join(__dirname, '../../data')
+let dataDir
+
+try {
+  const { app } = require('electron')
+  dataDir = path.join(app.getPath('userData'), 'data')
+} catch {
+  dataDir = path.join(__dirname, '../../../data')
+}
+
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
 
 const knex = require('knex')({
