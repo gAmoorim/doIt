@@ -34,10 +34,12 @@ Diferente de aplicações web comuns, o DoIt:
 
 ---
 
-## 📸 Demonstração
+## Preview
 
+>Tela de Login
 ![Tela de login](assets/login.png)
 
+>Dashboard
 ![Dashboard](assets/dashboard.png)
 
 ### Funcionalidades:
