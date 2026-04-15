@@ -1,29 +1,72 @@
-# ✅ TodoList
+# 🖥️ DoIt
 
-> Um aplicativo simples e moderno para gerenciar suas tarefas diárias com Node.js e PostgreSQL.
-
-O TodoList é um aplicativo simples para gerenciar tarefas do dia a dia.
-Ele permite criar, visualizar e organizar tarefas de forma prática e rápida.
-O backend foi desenvolvido em Node.js e utiliza um banco de dados SQL para persistência dos dados.
+> Aplicativo desktop de gerenciamento de tarefas.
 
 ---
 
-## 🚀 Funcionalidades
+O **DoIt** é um aplicativo desktop completo para gerenciamento de tarefas, desenvolvido utilizando **Electron**, permitindo rodar como um software nativo no computador.
 
-- ➕ Criar tarefas
+Diferente de aplicações web comuns, o DoIt:
+- roda como um **executável (.exe)** no Windows
+- possui **backend e frontend integrados**
+- armazena dados localmente
+- funciona de forma independente do navegador
 
-- 📋 Listar tarefas
+---
 
-- 💾 Persistência com banco de dados
+## Tecnologias utilizadas
 
-- ⚙️ Configuração via variáveis de ambiente
+### 🧠 Backend
+- Node.js
+- Express
+- SQLite
+- Knex
+- JWT (autenticação)
+- Bcrypt (criptografia de senha)
 
-- 🗂️ Código organizado por módulos
+### 🎨 Frontend
+- React
+- Vite
 
-## 🛠️ Tecnologias
+### 🖥️ Desktop
+- Electron
+- Electron Builder
 
-- ⚡ JavaScript (Node.js)
+---
 
-- 🗄️ PostgreSQL / SQL
+## 📸 Demonstração
 
-- 📦 npm para gerenciamento de dependências
+![Tela de login](assets/login.png)
+
+![Dashboard](assets/dashboard.png)
+
+### Funcionalidades:
+
+- Cadastro de usuários
+- Autenticação com JWT
+- Criação de tarefas
+- Edição de tarefas
+- Marcar como concluída
+- Remoção de tarefas
+
+## ⚙️ Instalação
+
+Clone o repositório:
+
+```bash
+git clone https://github.com/gAmoorim/doIt.git
+```
+Instale as dependências:
+```bash
+npm install
+```
+Instale também o frontend:
+```bash
+cd frontend
+npm install
+cd ..
+```
+Rodar em modo desenvolvimento e build do executável
+```bash
+npm run dev & npm run build
+```
