@@ -12,18 +12,16 @@ rotas.get('/usuarios', exibirUsuarios)
 
 rotas.post('/login', login)
 
-rotas.use(auth)
+rotas.get('/tarefas/filtro', auth, filtros)
+rotas.get('/usuario', auth, obterUsuario)
+rotas.put('/usuario', auth, atualizarUsuario)
+rotas.delete('/usuario', auth, deletarUsuario)
 
-rotas.get('/tarefas/filtro', filtros)
-rotas.get('/usuario', obterUsuario)
-rotas.put('/usuario', atualizarUsuario)
-rotas.delete('/usuario', deletarUsuario)
+rotas.post('/tarefa', auth, criarTarefa)
+rotas.get('/tarefas', auth, listarTarefas)
 
-rotas.post('/tarefa', criarTarefa)
-rotas.get('/tarefas', listarTarefas)
-
-rotas.get('/tarefas/:id', listarTarefaEspecifica)
-rotas.put('/tarefas/:id', atualizarTarefa)
-rotas.delete('/tarefas/:id', deletarTarefa)
+rotas.get('/tarefas/:id', auth, listarTarefaEspecifica)
+rotas.put('/tarefas/:id', auth, atualizarTarefa)
+rotas.delete('/tarefas/:id', auth, deletarTarefa)
 
 module.exports = rotas
