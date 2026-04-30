@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('env', {
-  baseUrl: 'http://localhost:' + (process.env.PORT || 3000)
+  baseUrl: 'http://localhost:' + (process.env.PORT || 3100)
 })
 
 contextBridge.exposeInMainWorld('tokenStore', {
