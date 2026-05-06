@@ -4,6 +4,13 @@ import TarefaCard from '../components/TarefaCard'
 import ModalTarefa from '../components/ModalTarefa'
 import styles from './Tarefas.module.css'
 
+const ordemPrioridade = { alta: 1, media: 2, baixa: 3 }
+
+const ordenarPorPrioridade = (lista) =>
+  [...lista].sort((a, b) =>
+    (ordemPrioridade[a.prioridade] || 4) - (ordemPrioridade[b.prioridade] || 4)
+  )
+
 export default function Tarefas({ onLogout }) {
   const [tarefas, setTarefas] = useState([])
   const [loading, setLoading] = useState(true)
@@ -19,7 +26,7 @@ export default function Tarefas({ onLogout }) {
   const carregar = async () => {
     setLoading(true)
     const data = await listarTarefasApi()
-    setTarefas(Array.isArray(data) ? data : [])
+    setTarefas(Array.isArray(data) ? ordenarPorPrioridade(data) : [])
     setFiltroAtivo(false)
     setLoading(false)
   }
@@ -31,7 +38,7 @@ export default function Tarefas({ onLogout }) {
     if (Object.keys(params).length === 0) return carregar()
     setLoading(true)
     const data = await filtrarTarefasApi(params)
-    setTarefas(Array.isArray(data) ? data : [])
+    setTarefas(Array.isArray(data) ? ordenarPorPrioridade(data) : [])
     setFiltroAtivo(true)
     setLoading(false)
   }
@@ -60,10 +67,10 @@ export default function Tarefas({ onLogout }) {
     carregar()
   }
 
-  const pendentes   = tarefas.filter(t => t.status === 'pendente')
-  const andamento   = tarefas.filter(t => t.status === 'em_andamento')
-  const concluidas  = tarefas.filter(t => t.status === 'concluida')
-  const outras      = tarefas.filter(t => !['pendente','em_andamento','concluida'].includes(t.status))
+  const pendentes  = tarefas.filter(t => t.status === 'pendente')
+  const andamento  = tarefas.filter(t => t.status === 'em_andamento')
+  const concluidas = tarefas.filter(t => t.status === 'concluida')
+  const outras     = tarefas.filter(t => !['pendente','em_andamento','concluida'].includes(t.status))
 
   return (
     <div className={styles.layout}>
@@ -142,8 +149,8 @@ export default function Tarefas({ onLogout }) {
         ) : (
           <div className={styles.colunas}>
             {[
-              { label: 'Pendentes', cor: '#f59e0b', lista: pendentes },
               { label: 'Em andamento', cor: '#60a5fa', lista: andamento },
+              { label: 'Pendentes', cor: '#f59e0b', lista: pendentes },
               { label: 'Concluídas', cor: '#4ade80', lista: concluidas },
               ...(outras.length ? [{ label: 'Outras', cor: '#9ca3af', lista: outras }] : [])
             ].map(({ label, cor, lista }) => lista.length > 0 && (
