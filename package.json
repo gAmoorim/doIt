@@ -46,20 +46,20 @@
   "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "electron-store": "^11.0.2",
     "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
-    "knex": "^3.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "knex": "^3.2.10",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
     "electron": "^41.2.0",
-    "electron-builder": "^26.8.1",
-    "nodemon": "^3.1.9",
+    "electron-builder": "^26.15.2",
+    "nodemon": "^3.1.14",
     "wait-on": "^8.0.3"
   }
 }
