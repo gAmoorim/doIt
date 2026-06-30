@@ -1,5 +1,7 @@
 const knex = require('../database/conexao')
 
+const normalizarTexto = (texto) => texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+
 const filtros = async (req,res) => {
     const {status, categoria, data_vencimento, search, titulo} = req.query
     const user_id = req.usuario.id;
@@ -15,10 +17,6 @@ const filtros = async (req,res) => {
             query.where("titulo", "like", `%${titulo}%`)
         }
 
-        if (categoria) {
-            query.where('categoria', categoria)
-        }
-
         if (data_vencimento) {
             query.where('data_vencimento', data_vencimento)
         }
@@ -30,9 +28,16 @@ const filtros = async (req,res) => {
             })
         }
 
-        const tarefas = await query;
-        res.json(tarefas);
+        let tarefas = await query
 
+        if (categoria) {
+            const categoriaNormalizada = normalizarTexto(categoria)
+            tarefas = tarefas.filter(t =>
+                t.categoria && normalizarTexto(t.categoria).includes(categoriaNormalizada)
+            )
+        }
+
+        return res.json(tarefas)
     } catch (error) {
         console.error("Erro ao aplicar filtros nas tarefas:", error)
         return res.status(500).json({ mensagem: "Erro interno do servidor." })
