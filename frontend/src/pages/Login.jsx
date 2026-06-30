@@ -28,6 +28,13 @@ export default function Login({ onLogin }) {
 
   const fazerCadastro = async () => {
     setErro(''); setSucesso(''); setLoading(true)
+
+    if (form.senha.length < 6) {
+      setErro('A senha deve ter no mínimo 6 caracteres')
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await cadastrarApi(form.nome, form.email, form.senha)
       if (res.mensagem === 'Usuário cadastrado com sucesso') {
@@ -99,7 +106,7 @@ export default function Login({ onLogin }) {
               </div>
               <div className={styles.formGroup}>
                 <label>Senha</label>
-                <input name="senha" type="password" placeholder="Mín. 5 caracteres" value={form.senha} onChange={atualizar}
+                <input name="senha" type="password" placeholder="Mín. 6 caracteres" value={form.senha} onChange={atualizar}
                   onKeyDown={e => e.key === 'Enter' && fazerCadastro()} />
               </div>
               {erro && <p className={styles.erro}>{erro}</p>}

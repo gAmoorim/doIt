@@ -1,16 +1,19 @@
 const bcrypt = require('bcrypt');
 const { queryBuscarUsuarioPeloEmail, queryCadastrarUsuario, queryAtualizarUsuario, queryDeletarUsuario, queryExibirUsuarios } = require('../database/querys/queryUsuarios');
-const { validarEmail } = require('../utils/validations');
 
 const cadastrarUsuario = async (req, res) => {
     const {nome, email, senha} = req.body
 
-    if (!nome || !email || !senha) {
-        return res.status(400).json({ error: 'Preencha todos os campos'})
+    if (!nome) {
+        return res.status(400).json({mensagem: 'O nome precisa ser informado'})
     }
 
-    if (!validarEmail(email)) {
-        return res.status(400).json({ error: 'Formato do email inválido' })
+    if (!email) {
+        return res.status(400).json({mensagem: 'O email precisa ser informado'})
+    }
+
+    if (!senha) {
+        return res.status(400).json({mensagem: 'A senha precisa ser informada'})
     }
 
     try {
@@ -51,31 +54,32 @@ const atualizarUsuario = async (req, res) => {
    let { nome, email, senha } = req.body
 
    if (!nome && !senha && !email) {
-        return res.status(400).json({mensage: 'Informe ao menos um campo para ser atualizado'})
+        return res.status(400).json({mensagem: 'Informe ao menos um campo para ser atualizado'})
    }
 
    const {id} = req.usuario
 
    try {
-        if (senha) {
-            if (senha.length < 5) {
-                return res.status(400).json({mensagem: 'A senha deve conter no mínimo 5 caracteres'})
-            }
-            senha = await bcrypt.hash(senha,10)
-        }
+        const dadosUsuarioAtualizado = {}
 
-        if (email !== req.usuario.email) {
+        if (nome) dadosUsuarioAtualizado.nome = nome
+
+        if (email && email !== req.usuario.email) {
             const emailJaExiste = await queryBuscarUsuarioPeloEmail(email)
 
             if (emailJaExiste) {
                 return res.status(400).json({mensagem: 'O email ja existe'})
             }
+            dadosUsuarioAtualizado.email = email
+        } else if (email) {
+            dadosUsuarioAtualizado.email = email
         }
 
-        const dadosUsuarioAtualizado = {
-            nome,
-            senha,
-            email
+        if (senha) {
+            if (senha.length < 6) {
+                return res.status(400).json({mensagem: 'A senha deve conter no mínimo 6 caracteres'})
+            }
+            dadosUsuarioAtualizado.senha = await bcrypt.hash(senha, 10)
         }
 
         await queryAtualizarUsuario(dadosUsuarioAtualizado, id)
@@ -96,7 +100,7 @@ const deletarUsuario = async (req,res) => {
         }
 
         await queryDeletarUsuario(id)
-        return res.status(200).json({mensagem:" Usuário deletado com sucesso. "})
+        return res.status(200).json({mensagem:"Usuário deletado com sucesso."})
     } catch (error) {
         console.error("Ocorreu um erro ao deletar o usuário:", error)
         return res.status(500).json({ mensagem: `Erro ao deletar o usuário: ${error.message}`})

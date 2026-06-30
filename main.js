@@ -1,5 +1,6 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog } = require('electron')
 const path = require('path')
+const fs = require('fs')
 
 require('dotenv').config()
 require('./backend/server.js')
@@ -7,10 +8,12 @@ require('./backend/server.js')
 const isDev = process.env.NODE_ENV === 'development'
 
 let store
+let dbPath
 
 async function inicializarStore() {
   const { default: Store } = await import('electron-store')
   store = new Store({ encryptionKey: 'doit_store_key_2026' })
+  dbPath = path.join(app.getPath('userData'), 'data', 'todolist.db')
 }
 
 function createWindow() {
@@ -35,6 +38,7 @@ function createWindow() {
   }
 }
 
+// IPC handlers para o token
 ipcMain.handle('token:salvar', (_, token, usuario) => {
   if (!store) return false
   store.set('token', token)
@@ -68,6 +72,41 @@ ipcMain.handle('token:limpar', () => {
   store.delete('usuario')
   store.delete('tokenSalvoEm')
   return true
+})
+
+// IPC handlers para backup
+ipcMain.handle('backup:exportar', async () => {
+  const { filePath } = await dialog.showSaveDialog({
+    title: 'Exportar backup',
+    defaultPath: `doit_backup_${new Date().toISOString().slice(0,10)}.db`,
+    filters: [{ name: 'Banco de dados', extensions: ['db'] }]
+  })
+
+  if (!filePath) return { sucesso: false, mensagem: 'Cancelado' }
+
+  try {
+    fs.copyFileSync(dbPath, filePath)
+    return { sucesso: true, mensagem: 'Backup exportado com sucesso!' }
+  } catch (err) {
+    return { sucesso: false, mensagem: 'Erro ao exportar: ' + err.message }
+  }
+})
+
+ipcMain.handle('backup:importar', async () => {
+  const { filePaths } = await dialog.showOpenDialog({
+    title: 'Importar backup',
+    filters: [{ name: 'Banco de dados', extensions: ['db'] }],
+    properties: ['openFile']
+  })
+
+  if (!filePaths?.length) return { sucesso: false, mensagem: 'Cancelado' }
+
+  try {
+    fs.copyFileSync(filePaths[0], dbPath)
+    return { sucesso: true, mensagem: 'Backup importado! Reinicie o app para aplicar.' }
+  } catch (err) {
+    return { sucesso: false, mensagem: 'Erro ao importar: ' + err.message }
+  }
 })
 
 app.whenReady().then(async () => {

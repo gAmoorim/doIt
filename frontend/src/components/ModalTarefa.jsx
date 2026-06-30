@@ -7,6 +7,7 @@ export default function ModalTarefa({ aberto, tarefa, onSalvar, onFechar }) {
   const [form, setForm] = useState(vazio)
 
   useEffect(() => {
+    setErro('')
     if (tarefa) {
       const etiquetas = (() => {
         try { return (JSON.parse(tarefa.etiquetas) || []).join(', ') } catch { return '' }
@@ -19,13 +20,32 @@ export default function ModalTarefa({ aberto, tarefa, onSalvar, onFechar }) {
 
   const atualizar = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
-  const salvar = () => {
+  const [erro, setErro] = useState('')
+  const [salvando, setSalvando] = useState(false)
+
+  const salvar = async () => {
+
+  if (!form.titulo?.trim()) {
+    setErro('O título é obrigatório')
+    return
+  }
+
+  if (!form.prioridade) {
+    setErro('A prioridade é obrigatória')
+    return
+  }
+
+  setErro('')
+  setSalvando(true)
+
   const dados = {
     ...form,
     data_vencimento: form.data_vencimento || null,
     etiquetas: form.etiquetas ? form.etiquetas.split(',').map(e => e.trim()).filter(Boolean) : []
   }
-  onSalvar(dados)
+
+  await onSalvar(dados)
+  setSalvando(false)
   }
 
   if (!aberto) return null
@@ -87,10 +107,14 @@ export default function ModalTarefa({ aberto, tarefa, onSalvar, onFechar }) {
           </div>
         </div>
 
+        {erro && <p className={styles.erro}>{erro}</p>}
+
         <div className={styles.footer}>
           <button className={styles.btnCancelar} onClick={onFechar}>Cancelar</button>
-          <button className={styles.btnSalvar} onClick={salvar}>
-            {tarefa ? 'Salvar alterações' : 'Criar tarefa'}
+          <button className={styles.btnSalvar} onClick={salvar} disabled={salvando}>
+            {salvando
+              ? (tarefa ? 'salvando...' : 'Criando...')
+              : (tarefa ? 'Salvar alterações' : 'Criar tarefa')}
           </button>
         </div>
       </div>

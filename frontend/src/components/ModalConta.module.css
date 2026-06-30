@@ -3,7 +3,7 @@
   inset: 0;
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(4px);
-  z-index: 200;
+  z-index: 250;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,7 +15,7 @@
   border: 1px solid #2a2a3a;
   border-radius: 16px;
   width: 100%;
-  max-width: 520px;
+  max-width: 460px;
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 24px 60px rgba(0,0,0,0.5);
@@ -59,12 +59,6 @@
   gap: 14px;
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -74,9 +68,9 @@
 .formGroup label {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.73rem;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
+  letter-spacing: 0.5px;
   color: rgba(255,255,255,0.35);
 }
 
@@ -87,9 +81,7 @@
   color: rgba(255,255,255,0.2);
 }
 
-.formGroup input,
-.formGroup select,
-.formGroup textarea {
+.formGroup input {
   padding: 10px 14px;
   background: #13131c;
   border: 1.5px solid #2a2a3a;
@@ -99,17 +91,30 @@
   color: #f1f1f1;
   outline: none;
   transition: border-color 0.2s;
-  resize: vertical;
 }
 
-.formGroup input::placeholder,
-.formGroup textarea::placeholder { color: rgba(255,255,255,0.18); }
+.formGroup input::placeholder { color: rgba(255,255,255,0.18); }
+.formGroup input:focus { border-color: #e94560; }
 
-.formGroup input:focus,
-.formGroup select:focus,
-.formGroup textarea:focus { border-color: #e94560; }
+.erro {
+  background: rgba(233,69,96,0.15);
+  border: 1px solid rgba(233,69,96,0.3);
+  color: #f87171;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+}
 
-.formGroup select option { background: #1a1a24; }
+.sucesso {
+  background: rgba(34,197,94,0.1);
+  border: 1px solid rgba(34,197,94,0.3);
+  color: #4ade80;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-family: 'DM Sans', sans-serif;
+}
 
 .footer {
   display: flex;
@@ -148,14 +153,55 @@
 }
 
 .btnSalvar:hover { opacity: 0.88; }
+.btnSalvar:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.erro {
-  background: rgba(233,69,96,0.15);
-  border: 1px solid rgba(233,69,96,0.3);
-  color: #f87171;
-  border-radius: 8px;
-  padding: 10px 14px;
-  font-size: 0.85rem;
-  font-family: 'DM Sans', sans-serif;
-  margin: 0 28px 14px;
+.zonaPerigo {
+  border-top: 1px solid #2a2a3a;
+  padding: 20px 28px 28px;
 }
+
+.btnDeletarConta {
+  width: 100%;
+  padding: 10px;
+  background: transparent;
+  border: 1.5px solid rgba(239,68,68,0.3);
+  border-radius: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnDeletarConta:hover { background: rgba(239,68,68,0.08); }
+
+.confirmacaoDelete p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.confirmacaoDelete strong { color: #f87171; }
+
+.confirmacaoAcoes {
+  display: flex;
+  gap: 10px;
+}
+
+.btnDeletarConfirmar {
+  flex: 1;
+  padding: 10px;
+  background: #ef4444;
+  border: none;
+  border-radius: 9px;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btnDeletarConfirmar:hover { opacity: 0.88; }

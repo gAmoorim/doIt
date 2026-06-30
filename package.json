@@ -1,5 +1,5 @@
 {
-  "name": "do-it",
+  "name": "doit",
   "version": "1.0.0",
   "main": "main.js",
   "scripts": {
@@ -57,7 +57,7 @@
   "devDependencies": {
     "concurrently": "^9.1.2",
     "cross-env": "^7.0.3",
-    "electron": "^41.2.0",
+    "electron": "^41.9.0",
     "electron-builder": "^26.15.2",
     "nodemon": "^3.1.14",
     "wait-on": "^8.0.3"

@@ -1,11 +1,16 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('env', {
-  baseUrl: 'http://localhost:' + (process.env.PORT || 3100)
+  baseUrl: 'http://localhost:' + (process.env.PORT || 3000)
 })
 
 contextBridge.exposeInMainWorld('tokenStore', {
   salvar: (token, usuario) => ipcRenderer.invoke('token:salvar', token, usuario),
   carregar: () => ipcRenderer.invoke('token:carregar'),
   limpar: () => ipcRenderer.invoke('token:limpar')
+})
+
+contextBridge.exposeInMainWorld('backup', {
+  exportar: () => ipcRenderer.invoke('backup:exportar'),
+  importar: () => ipcRenderer.invoke('backup:importar')
 })

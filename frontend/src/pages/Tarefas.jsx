@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { listarTarefasApi, criarTarefaApi, atualizarTarefaApi, deletarTarefaApi, filtrarTarefasApi } from '../services/api'
 import TarefaCard from '../components/TarefaCard'
 import ModalTarefa from '../components/ModalTarefa'
+import ModalConfirmacao from '../components/ModalConfirmacao'
+import ModalConta from '../components/ModalConta'
 import styles from './Tarefas.module.css'
 
 const ordemPrioridade = { alta: 1, media: 2, baixa: 3 }
@@ -18,10 +20,12 @@ export default function Tarefas({ onLogout }) {
   const [tarefaEditando, setTarefaEditando] = useState(null)
   const [filtros, setFiltros] = useState({ status: '', categoria: '', titulo: '' })
   const [filtroAtivo, setFiltroAtivo] = useState(false)
-
-  const usuario = (() => {
+  const [msgBackup, setMsgBackup] = useState('')
+  const [confirmacao, setConfirmacao] = useState(null)
+  const [modalContaAberto, setModalContaAberto] = useState(false)
+  const [usuario, setUsuario] = useState(() => {
     try { return JSON.parse(sessionStorage.getItem('usuario')) } catch { return null }
-  })()
+  })
 
   const carregar = async () => {
     setLoading(true)
@@ -61,10 +65,60 @@ export default function Tarefas({ onLogout }) {
     carregar()
   }
 
-  const deletar = async (id) => {
-    if (!confirm('Tem certeza que quer deletar esta tarefa?')) return
-    await deletarTarefaApi(id)
-    carregar()
+  const pedirConfirmacaoDeletar = (id) => {
+    setConfirmacao({
+      titulo: 'Deletar tarefa',
+      mensagem: 'Tem certeza que quer deletar esta tarefa? Essa ação não pode ser desfeita.',
+      textoConfirmar: 'Deletar',
+      acao: async () => {
+        await deletarTarefaApi(id)
+        carregar()
+        setConfirmacao(null)
+      }
+    })
+  }
+
+  const exportarBackup = async () => {
+    const res = await window.backup.exportar()
+    setMsgBackup(res.mensagem)
+    setTimeout(() => setMsgBackup(''), 4000)
+  }
+
+  const pedirConfirmacaoImportar = () => {
+    setConfirmacao({
+      titulo: 'Importar backup',
+      mensagem: 'Atenção: importar um backup vai substituir TODOS os dados atuais (usuários e tarefas). Esta ação não pode ser desfeita.',
+      textoConfirmar: 'Importar',
+      acao: async () => {
+        const res = await window.backup.importar()
+        setMsgBackup(res.mensagem)
+        setTimeout(() => setMsgBackup(''), 4000)
+        setConfirmacao(null)
+      }
+    })
+  }
+
+  const pedirConfirmacaoLogout = () => {
+    setConfirmacao({
+      titulo: 'Sair da conta',
+      mensagem: 'Tem certeza que deseja sair?',
+      textoConfirmar: 'Sair',
+      acao: () => {
+        setConfirmacao(null)
+        onLogout()
+      }
+    })
+  }
+
+  const handleContaAtualizada = (dadosNovos) => {
+    const usuarioAtualizado = { ...usuario, ...dadosNovos }
+    setUsuario(usuarioAtualizado)
+    sessionStorage.setItem('usuario', JSON.stringify(usuarioAtualizado))
+  }
+
+  const handleContaDeletada = () => {
+    setModalContaAberto(false)
+    onLogout()
   }
 
   const pendentes  = tarefas.filter(t => t.status === 'pendente')
@@ -116,13 +170,20 @@ export default function Tarefas({ onLogout }) {
         </div>
 
         <div className={styles.sidebarFooter}>
+          <p className={styles.sidebarLabel}>Backup</p>
+          <button className={styles.btnBackup} onClick={exportarBackup}>⬆ Exportar backup</button>
+          <button className={styles.btnBackup} onClick={pedirConfirmacaoImportar}>⬇ Importar backup</button>
+          {msgBackup && <p className={styles.msgBackup}>{msgBackup}</p>}
+
+          <div className={styles.separador} />
+
           {usuario && (
-            <div className={styles.usuarioInfo}>
+            <button className={styles.usuarioInfo} onClick={() => setModalContaAberto(true)}>
               <strong>{usuario.nome}</strong>
               {usuario.email}
-            </div>
+            </button>
           )}
-          <button className={styles.btnSair} onClick={onLogout}>Sair</button>
+          <button className={styles.btnSair} onClick={pedirConfirmacaoLogout}>Sair</button>
         </div>
       </aside>
 
@@ -143,8 +204,17 @@ export default function Tarefas({ onLogout }) {
           <div className={styles.loading}>Carregando...</div>
         ) : tarefas.length === 0 ? (
           <div className={styles.vazio}>
-            <p>Nenhuma tarefa encontrada.</p>
-            <span>Crie uma nova tarefa para começar!</span>
+            {filtroAtivo ? (
+              <>
+                <p>Nenhuma tarefa encontrada com esse filtro.</p>
+                <span>Tente ajustar os filtros ou limpe-os para ver todas as tarefas.</span>
+              </>
+            ) : (
+              <>
+                <p>Nenhuma tarefa encontrada.</p>
+                <span>Crie uma nova tarefa para começar!</span>
+              </>
+            )}
           </div>
         ) : (
           <div className={styles.colunas}>
@@ -162,7 +232,7 @@ export default function Tarefas({ onLogout }) {
                 </div>
                 <div className={styles.lista}>
                   {lista.map(t => (
-                    <TarefaCard key={t.id} tarefa={t} onEditar={abrirEdicao} onDeletar={deletar} />
+                    <TarefaCard key={t.id} tarefa={t} onEditar={abrirEdicao} onDeletar={pedirConfirmacaoDeletar} />
                   ))}
                 </div>
               </section>
@@ -176,6 +246,23 @@ export default function Tarefas({ onLogout }) {
         tarefa={tarefaEditando}
         onSalvar={salvar}
         onFechar={() => setModalAberto(false)}
+      />
+
+      <ModalConfirmacao
+        aberto={!!confirmacao}
+        titulo={confirmacao?.titulo}
+        mensagem={confirmacao?.mensagem}
+        textoConfirmar={confirmacao?.textoConfirmar}
+        onConfirmar={confirmacao?.acao}
+        onCancelar={() => setConfirmacao(null)}
+      />
+
+      <ModalConta
+        aberto={modalContaAberto}
+        usuario={usuario}
+        onFechar={() => setModalContaAberto(false)}
+        onContaAtualizada={handleContaAtualizada}
+        onContaDeletada={handleContaDeletada}
       />
     </div>
   )

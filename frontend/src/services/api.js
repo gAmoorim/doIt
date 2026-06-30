@@ -1,4 +1,4 @@
-const BASE = 'http://localhost:3100'
+const BASE = 'http://localhost:3000'
 
 const getToken = () => sessionStorage.getItem('token')
 
@@ -22,6 +22,24 @@ export const cadastrarApi = async (nome, email, senha) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nome, email, senha })
+  })
+  return res.json()
+}
+
+// USUARIO
+export const atualizarUsuarioApi = async (dados) => {
+  const res = await fetch(`${BASE}/usuario`, {
+    method: 'PUT',
+    headers: headers(),
+    body: JSON.stringify(dados)
+  })
+  return res.json()
+}
+
+export const deletarUsuarioApi = async () => {
+  const res = await fetch(`${BASE}/usuario`, {
+    method: 'DELETE',
+    headers: headers()
   })
   return res.json()
 }
