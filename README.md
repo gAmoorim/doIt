@@ -4,19 +4,21 @@ Aplicativo desktop de gerenciamento de tarefas, construído com Electron, React 
 
 ## 📋 Sobre o projeto
 
-O DoIt é um to-do list completo no formato de aplicativo desktop instalável no Windows. O projeto nasceu como uma API web e evoluiu para uma aplicação Electron, unindo um backend Node.js/Express com um frontend React moderno, tudo empacotado em um único executável.
+O **DoIt** é um aplicativo de gerenciamento de tarefas no formato de aplicativo desktop instalável no Windows. O projeto nasceu como uma API web e evoluiu para uma aplicação Electron, unindo um backend Node.js/Express a um frontend React moderno, tudo empacotado em um único executável.
 
 ## ✨ Funcionalidades
 
-- 🔐 **Autenticação completa** — cadastro e login com JWT e senhas criptografadas (bcrypt)
-- 🔄 **Sessão persistente** — permanece logado por 5 dias entre uma abertura e outra do app
-- ✅ **Gerenciamento de tarefas** — criação, edição, exclusão e listagem
-- 🏷️ **Organização avançada** — status (pendente, em andamento, concluída), prioridade (alta, média, baixa), categoria, etiquetas e data de vencimento
-- 🔍 **Filtros** — busca por título, status e categoria
-- 📊 **Ordenação inteligente** — tarefas organizadas por prioridade dentro de cada status
-- 👤 **Gerenciamento de conta** — edição de nome, e-mail e senha, com opção de exclusão de conta
-- 💾 **Backup local** — exportação e importação do banco de dados para resguardar seus dados
-- 🎨 **Interface moderna** — design dark mode com identidade visual própria
+- 🔐 **Autenticação completa** — cadastro e login com JWT e senhas criptografadas com bcrypt.
+- 🔄 **Sessão persistente** — permanece logado por até 5 dias entre uma abertura e outra do aplicativo.
+- ✅ **Gerenciamento de tarefas** — criação, edição, exclusão e listagem de tarefas.
+- 🏷️ **Organização avançada** — status (pendente, em andamento e concluída), prioridade (alta, média e baixa), categoria, etiquetas e data de vencimento.
+- 🔍 **Filtros** — busca e filtragem de tarefas por título, status e categoria.
+- 📊 **Ordenação inteligente** — tarefas organizadas por prioridade dentro de cada status.
+- 🗂️ **Modo Kanban** — alterne para uma visualização em quadro, com tarefas organizadas por status em colunas.
+- 🖱️ **Arrastar e soltar** — mova tarefas entre as colunas do Kanban de forma intuitiva, atualizando sua organização conforme o fluxo de trabalho.
+- 👤 **Gerenciamento de conta** — edição de nome, e-mail e senha, com opção de exclusão da conta.
+- 💾 **Backup local** — exportação e importação do banco de dados para proteger seus dados.
+- 🎨 **Interface moderna** — design em dark mode com identidade visual própria.
 
 ## 🛠️ Tecnologias
 
@@ -43,6 +45,7 @@ O DoIt é um to-do list completo no formato de aplicativo desktop instalável no
 ![Tela de login](assets/tela-login.png) -->
 ![Tela de tarefas](assets/tela-tarefas.png) -->
 ![Modal de nova tarefa](assets/tela-modalTarefas.png) -->
+![Tela do Modo Kanban](assets/tela-kanban.png) -->
 
 ## 🚀 Como rodar o projeto
 
