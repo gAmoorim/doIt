@@ -7,7 +7,8 @@
 /* SIDEBAR */
 .sidebar {
   width: 240px;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   background: #1a1a24;
   border-right: 1px solid #2a2a3a;
   display: flex;
@@ -105,8 +106,12 @@
 .btnLimpar:hover { border-color: #e94560; color: #e94560; }
 
 .sidebarFooter {
+  position: sticky;
+  bottom: 0;
+  background: #1a1a24;
   border-top: 1px solid #2a2a3a;
-  padding-top: 20px;
+  padding-top: 16px;
+  margin-top: auto;
 }
 
 .usuarioInfo {
@@ -144,7 +149,13 @@
 .main {
   flex: 1;
   padding: 36px 40px;
-  overflow-y: auto;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: #0f0f13;
+  overflow-y: auto;  /* ← move para cá */
 }
 
 .mainHeader {
@@ -216,8 +227,6 @@
   flex-direction: column;
   gap: 32px;
 }
-
-.secao {}
 
 .secaoHeader {
   display: flex;
@@ -315,4 +324,39 @@
   color: rgba(255,255,255,0.7);
   font-size: 0.88rem;
   margin-bottom: 2px;
+}
+
+.headerAcoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggleVisualizacao {
+  display: flex;
+  background: #1a1a24;
+  border: 1px solid #2a2a3a;
+  border-radius: 9px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.toggleBtn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: transparent;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggleBtn:hover { color: rgba(255,255,255,0.7); }
+
+.toggleAtivo {
+  background: #e94560 !important;
+  color: #fff !important;
 }

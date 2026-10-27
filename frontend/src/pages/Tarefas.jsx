@@ -4,6 +4,7 @@ import TarefaCard from '../components/TarefaCard'
 import ModalTarefa from '../components/ModalTarefa'
 import ModalConfirmacao from '../components/ModalConfirmacao'
 import ModalConta from '../components/ModalConta'
+import KanbanBoard from '../components/KanbanBoard'
 import styles from './Tarefas.module.css'
 
 const ordemPrioridade = { alta: 1, media: 2, baixa: 3 }
@@ -23,6 +24,9 @@ export default function Tarefas({ onLogout }) {
   const [msgBackup, setMsgBackup] = useState('')
   const [confirmacao, setConfirmacao] = useState(null)
   const [modalContaAberto, setModalContaAberto] = useState(false)
+  const [visualizacao, setVisualizacao] = useState(() =>
+    localStorage.getItem('doit_visualizacao') || 'lista'
+  )
   const [usuario, setUsuario] = useState(() => {
     try { return JSON.parse(sessionStorage.getItem('usuario')) } catch { return null }
   })
@@ -36,6 +40,11 @@ export default function Tarefas({ onLogout }) {
   }
 
   useEffect(() => { carregar() }, [])
+
+  const trocarVisualizacao = (modo) => {
+    setVisualizacao(modo)
+    localStorage.setItem('doit_visualizacao', modo)
+  }
 
   const aplicarFiltros = async () => {
     const params = Object.fromEntries(Object.entries(filtros).filter(([,v]) => v))
@@ -78,6 +87,28 @@ export default function Tarefas({ onLogout }) {
     })
   }
 
+  const atualizarStatus = async (id, novoStatus) => {
+  const tarefa = tarefas.find(t => t.id === id)
+  if (!tarefa) return
+
+  // atualiza localmente sem recarregar
+  setTarefas(prev =>
+    ordenarPorPrioridade(
+      prev.map(t => t.id === id ? { ...t, status: novoStatus } : t)
+    )
+  )
+
+  // salva na API em background
+  await atualizarTarefaApi(id, { ...tarefa, status: novoStatus })
+}
+
+const reordenarTarefas = (status, novaOrdem) => {
+  setTarefas(prev => {
+    const outras = prev.filter(t => t.status !== status)
+    return [...outras, ...novaOrdem]
+  })
+}
+
   const exportarBackup = async () => {
     const res = await window.backup.exportar()
     setMsgBackup(res.mensagem)
@@ -87,7 +118,7 @@ export default function Tarefas({ onLogout }) {
   const pedirConfirmacaoImportar = () => {
     setConfirmacao({
       titulo: 'Importar backup',
-      mensagem: 'Atenção: importar um backup vai substituir TODOS os dados atuais (usuários e tarefas). Esta ação não pode ser desfeita.',
+      mensagem: 'Atenção: importar um backup vai substituir TODOS os dados atuais. Esta ação não pode ser desfeita.',
       textoConfirmar: 'Importar',
       acao: async () => {
         const res = await window.backup.importar()
@@ -103,10 +134,7 @@ export default function Tarefas({ onLogout }) {
       titulo: 'Sair da conta',
       mensagem: 'Tem certeza que deseja sair?',
       textoConfirmar: 'Sair',
-      acao: () => {
-        setConfirmacao(null)
-        onLogout()
-      }
+      acao: () => { setConfirmacao(null); onLogout() }
     })
   }
 
@@ -128,7 +156,6 @@ export default function Tarefas({ onLogout }) {
 
   return (
     <div className={styles.layout}>
-      {/* SIDEBAR */}
       <aside className={styles.sidebar}>
         <div className={styles.brand}>do<span>it</span></div>
 
@@ -187,7 +214,6 @@ export default function Tarefas({ onLogout }) {
         </div>
       </aside>
 
-      {/* MAIN */}
       <main className={styles.main}>
         <div className={styles.mainHeader}>
           <div>
@@ -197,7 +223,24 @@ export default function Tarefas({ onLogout }) {
               {filtroAtivo ? ' encontradas' : ' no total'}
             </p>
           </div>
-          <button className={styles.btnNova} onClick={abrirNova}>+ Nova tarefa</button>
+
+          <div className={styles.headerAcoes}>
+            <div className={styles.toggleVisualizacao}>
+              <button
+                className={`${styles.toggleBtn} ${visualizacao === 'lista' ? styles.toggleAtivo : ''}`}
+                onClick={() => trocarVisualizacao('lista')}
+              >
+                ☰ Lista
+              </button>
+              <button
+                className={`${styles.toggleBtn} ${visualizacao === 'kanban' ? styles.toggleAtivo : ''}`}
+                onClick={() => trocarVisualizacao('kanban')}
+              >
+                ⊞ Kanban
+              </button>
+            </div>
+            <button className={styles.btnNova} onClick={abrirNova}>+ Nova tarefa</button>
+          </div>
         </div>
 
         {loading ? (
@@ -216,12 +259,20 @@ export default function Tarefas({ onLogout }) {
               </>
             )}
           </div>
+        ) : visualizacao === 'kanban' ? (
+          <KanbanBoard
+            tarefas={tarefas}
+            onEditar={abrirEdicao}
+            onDeletar={pedirConfirmacaoDeletar}
+            onAtualizarStatus={atualizarStatus}
+            onReordenar={reordenarTarefas}
+          />
         ) : (
           <div className={styles.colunas}>
             {[
               { label: 'Em andamento', cor: '#60a5fa', lista: andamento },
-              { label: 'Pendentes', cor: '#f59e0b', lista: pendentes },
-              { label: 'Concluídas', cor: '#4ade80', lista: concluidas },
+              { label: 'Pendentes',    cor: '#f59e0b', lista: pendentes },
+              { label: 'Concluídas',   cor: '#4ade80', lista: concluidas },
               ...(outras.length ? [{ label: 'Outras', cor: '#9ca3af', lista: outras }] : [])
             ].map(({ label, cor, lista }) => lista.length > 0 && (
               <section key={label} className={styles.secao}>

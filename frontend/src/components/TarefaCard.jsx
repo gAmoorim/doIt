@@ -17,7 +17,10 @@ export default function TarefaCard({ tarefa, onEditar, onDeletar }) {
   const status = statusStyle[tarefa.status] || { bg: 'rgba(255,255,255,0.05)', color: '#aaa', label: tarefa.status }
 
   const etiquetas = (() => {
-    try { return JSON.parse(tarefa.etiquetas) || [] } catch { return [] }
+    try {
+      const parsed = JSON.parse(tarefa.etiquetas)
+      return Array.isArray(parsed) ? parsed : []
+    } catch { return [] }
   })()
 
   const formatarData = (data) => {
